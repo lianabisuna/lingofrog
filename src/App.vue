@@ -1,28 +1,30 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-    >
-      <div>Translator</div>
-    </v-app-bar>
+    <AppHeader />
+    <SearchBar />
 
     <v-main>
       <router-view/>
     </v-main>
 
-    <v-footer>
-      <div>Footer</div>
-    </v-footer>
+    
   </v-app>
 </template>
 
 <script>
+  import AppHeader from '@/components/AppHeader'
+  import SearchBar from '@/components/SearchBar'
 
-export default {
-  name: 'App',
+  export default {
+    name: 'App',
 
-  data: () => ({
-    //
-  }),
-};
+    components: {
+      AppHeader,
+      SearchBar
+    },
+
+    data: () => ({
+      //
+    }),
+  };
 </script>
