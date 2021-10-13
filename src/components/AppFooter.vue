@@ -37,6 +37,10 @@
 
 <script>
 export default {
-  name: 'AppFooter'
+  name: 'AppFooter',
+
+  data: () => ({
+    icons: []
+  })
 }
 </script>
