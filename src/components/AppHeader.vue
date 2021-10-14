@@ -34,10 +34,27 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import '~vuetify/src/styles/settings/_variables';
+
   .app-header {
     /* border-bottom: 1px solid #D7D7D7 !important; */
-    padding: 0 3rem 0 3rem;
     background-color: #fff !important;
+  }
+
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    .app-header {
+      margin: 0;
+    }
+  }
+  @media #{map-get($display-breakpoints, 'md-only')} {
+    .app-header {
+      margin: 0 1.5rem 0 1.5rem;
+    }
+  }
+  @media #{map-get($display-breakpoints, 'lg-and-up')} {
+    .app-header {
+      margin: 0 3rem 0 3rem;
+    }
   }
 </style>

@@ -21,7 +21,7 @@
         <v-col
           v-for="(item,key) in translations"
           :key="key"
-          cols="4"
+          cols="12" md="6" lg="4" xl="3"
           class="d-flex"
         >
           <AppCard
@@ -32,7 +32,7 @@
         </v-col>
         
         <v-col
-          cols="4"
+          cols="12" md="6" lg="4" xl="3"
           class="d-flex"
         >
           <ButtonCard />
@@ -66,8 +66,22 @@
   }
 </script>
 
-<style scoped>
-  .app-home {
-    margin: 0 3rem 0 3rem;
+<style lang="scss" scoped>
+  @import '~vuetify/src/styles/settings/_variables';
+
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    .app-home {
+      margin: 0;
+    }
+  }
+  @media #{map-get($display-breakpoints, 'md-only')} {
+    .app-home {
+      margin: 0 1.5rem 0 1.5rem;
+    }
+  }
+  @media #{map-get($display-breakpoints, 'lg-and-up')} {
+    .app-home {
+      margin: 0 3rem 0 3rem;
+    }
   }
 </style>

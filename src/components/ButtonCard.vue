@@ -4,6 +4,7 @@
       outlined
       color="lightgrey"
       class="rounded-lg flex-grow-1 d-flex flex-column"
+      :style="{ minHeight: '35vh' }"
     >
       <v-card
         class="rounded-lg flex-grow-1 align-center d-flex"

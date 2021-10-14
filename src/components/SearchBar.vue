@@ -50,7 +50,7 @@
     >
       <v-row>
         <v-col
-          cols="2"
+          cols="12" sm="6" md="4" lg="2"
           class="py-1"
           v-for="(language, i) in languages"
           :key="i"
@@ -179,9 +179,10 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import '~vuetify/src/styles/settings/_variables';
+
   .search-bar-container {
-    padding: 0 4rem 0 4rem;
     background-color: #fff !important;
     width: 100%;
     height: 100%;
@@ -209,15 +210,28 @@
     border-left: 1px solid #D7D7D7;
   }
 
-  .menu-bar-container {
-    padding: 0 4rem 0 4rem;
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    .search-bar-container {
+      padding: 0 0.5rem 0 0.5rem;
+    }
+    .menu-bar-container {
+      padding: 0 0.5rem 0 0.5rem;
+    }
   }
-
-  @media (min-width: 1264px) and (max-width: 1903px) {
-  .cols-5 {
-    width: 20%;
-    max-width: 20%;
-    flex-basis: 20%;
+  @media #{map-get($display-breakpoints, 'md-only')} {
+    .search-bar-container {
+      padding: 0 2.5rem 0 2.5rem;
+    }
+    .menu-bar-container {
+      padding: 0 2.5rem 0 2.5rem;
+    }
   }
-}
+  @media #{map-get($display-breakpoints, 'lg-and-up')} {
+    .search-bar-container {
+      padding: 0 4rem 0 4rem;
+    }
+    .menu-bar-container {
+      padding: 0 4rem 0 4rem;
+    }
+  }
 </style>
