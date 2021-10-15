@@ -61,12 +61,12 @@
             class="text-none font-weight-regular justify-start"
             :style="{letterSpacing: 'normal'}"
             rounded
-            :color="isSelectedLanguage(language.language) ? 'blue lighten-5' : 'transparent'"
+            :color="isSelected(language.language) ? 'blue lighten-5' : 'transparent'"
             @click="toggleLanguage(language)"
           >
             <v-icon
               left
-              v-if="isSelectedLanguage(language.language)"
+              v-if="isSelected(language.language)"
             >
               mdi-check
             </v-icon>
@@ -85,8 +85,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
-
   export default {
     name: 'SearchBar',
 
@@ -95,13 +93,14 @@
       scrollPosition: 0,
       scrollDown: false,
       drawer: false,
-      languages: null,
       isFetching: false,
-      selectedItem: [],
-      selectedLanguages: [
-        { language: "en", name: "English" }
-      ]
+      storedLanguages: JSON.parse(localStorage.getItem('languages'))
     }),
+
+    computed: {
+      languages() { return this.$store.getters['languages'] },
+      selected() { return this.$store.getters['selected'] }
+    },
 
     mounted() {
       this.getStoredLanguages()
@@ -127,53 +126,26 @@
         this.prevScroll = this.scrollPosition <= 0 ? 0 : this.scrollPosition
         return
       },
-      fetchLanguages() {
-        let options = {
-          method: 'GET',
-          url: 'https://deep-translate1.p.rapidapi.com/language/translate/v2/languages',
-          headers: {
-            'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
-            'x-rapidapi-key': '3edc4281f5msh7f023170c4a1bf0p13f5f2jsn7699bb9495fe'
-          }
-        }
-
-        axios.request(options)
-        .then((response) => {
-          console.log('[response]', response.data.languages);
-          localStorage.setItem('languages', JSON.stringify(response.data.languages))
-          this.languages = response.data.languages
-        })
-        .catch((error) => {
-          console.log('[error]', error);
-        })
-      },
       getStoredLanguages() {
-        let storedLanguages = JSON.parse(localStorage.getItem('languages'))
-
-        if (storedLanguages?.length) {
-          console.log('[stored langauges available]');
-          this.languages = storedLanguages
-        }
-        else {
-          console.log('[no stored languages found]', );
-          this.fetchLanguages()
-        }
+        if (this.storedLanguages?.length)
+          this.$store.commit('setLanguages', this.storedLanguages)
+        else
+          this.$store.dispatch('getLanguages')
       },
-      isSelectedLanguage(code) {
-        // Traverse the object to see if language code is included
-        if (this.selectedLanguages.find(el => code === el.language)) {
+      isSelected(code) {
+        // Traverse the array to see if language code is included
+        if (this.selected.find(el => code === el.language)) {
           return true
         }
         return
       },
       toggleLanguage(language) {
-        if (this.isSelectedLanguage(language.language)) {
-          let index = this.selectedLanguages.findIndex(el => language.language === el.language)
-          this.selectedLanguages.splice(index, 1)
-        }
-        else {
-          this.selectedLanguages.push(language)
-        }
+        // Determine the position if language is toggled
+        let index = this.selected.findIndex(el => language.language === el.language)
+        if (index >= 0)
+          this.$store.commit('removeSelected', index)
+        else
+          this.$store.commit('addSelected', language)
       }
     }
   }
