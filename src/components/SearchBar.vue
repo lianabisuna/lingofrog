@@ -20,6 +20,7 @@
           ]"
         >
           <v-text-field
+            v-model="word"
             prepend-inner-icon="mdi-magnify"
             hide-details
             solo flat
@@ -63,6 +64,7 @@
             rounded
             :color="isSelected(language.language) ? 'blue lighten-5' : 'transparent'"
             @click="toggleLanguage(language)"
+            :loading="isLoading && currentLanguage === language.language"
           >
             <v-icon
               left
@@ -93,13 +95,19 @@
       scrollPosition: 0,
       scrollDown: false,
       drawer: false,
-      isFetching: false,
-      storedLanguages: JSON.parse(localStorage.getItem('languages'))
+      storedLanguages: JSON.parse(localStorage.getItem('languages')),
+      isLoading: false,
+      currentLanguage: null
     }),
 
     computed: {
+      word: {
+        get() { return this.$store.getters['word'] },
+        set(val) { this.$store.commit('updateWord', val) }
+      },
       languages() { return this.$store.getters['languages'] },
-      selected() { return this.$store.getters['selected'] }
+      selected() { return this.$store.getters['selected'] },
+      translations() { return this.$store.getters['translations'] }
     },
 
     mounted() {
@@ -135,17 +143,36 @@
       isSelected(code) {
         // Traverse the array to see if language code is included
         if (this.selected.find(el => code === el.language)) {
-          return true
+          return true 
         }
         return
       },
-      toggleLanguage(language) {
+      async toggleLanguage(language) {
         // Determine the position if language is toggled
         let index = this.selected.findIndex(el => language.language === el.language)
-        if (index >= 0)
+        if (index >= 0) {
           this.$store.commit('removeSelected', index)
-        else
-          this.$store.commit('addSelected', language)
+        }
+        else {
+          if (this.word) {
+            // Fetch word translation from API
+            this.currentLanguage = language.language
+            this.isLoading = true
+            this.$store.commit('addSelected', language)
+            const payload = {
+              q: this.word,
+              source: 'en',
+              target: language.language
+            }
+            await this.$store.dispatch('translateText', {payload: payload, language: language.name})
+            this.isLoading = false
+            this.currentLanguage = null
+          }
+          else {
+            // Add data to selected language
+            this.$store.commit('addSelected', language)
+          }
+        }
       }
     }
   }
