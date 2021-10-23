@@ -1,11 +1,13 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-sheet
-      outlined
-      :color="hover ? 'orange' : 'lightgrey'"
+      outlined="2"
+      :color="hover ? 'white' : 'transparent'"
       class="rounded-lg flex-grow-1 d-flex flex-column"
     >
       <v-card
+        dark
+        color="#5F4DA1"
         class="rounded-lg flex-grow-1 d-flex flex-column"
         flat
       >
@@ -36,8 +38,8 @@
                   fab
                   x-small
                   depressed
-                  color="white"
-                  :style="{ border: '1px solid orange !important' }"
+                  color="#5F4DA1"
+                  :style="{ border: '2px solid white !important' }"
                 >
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -47,7 +49,7 @@
         </div>
 
         <v-card-text
-          class="text-h2 black--text"
+          class="text-h2 white--text"
           :style="{ minHeight: '25vh' }"
         >
           {{ translation }}

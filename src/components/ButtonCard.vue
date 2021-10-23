@@ -7,10 +7,11 @@
       :style="{ minHeight: '35vh' }"
     >
       <v-card
+        dark
         class="rounded-lg flex-grow-1 align-center d-flex"
         hover
         flat
-        :color="hover ? 'grey lighten-5' : ''"
+        :color="hover ? '#564591' : '#5F4DA1'"
         :ripple="hover"
       >
         <v-card-text class="text-center">

@@ -4,8 +4,8 @@ module.exports = {
   ],
   // css: {
   //   loaderOptions: {
-  //     sass: {
-  //       additionalData: `@import "@/assets/main.scss";`
+  //     scss: {
+  //       prependData: `@import "@/assets/main.scss";`
   //     }
   //   }
   // }
