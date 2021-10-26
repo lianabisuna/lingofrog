@@ -1,13 +1,18 @@
-import { language } from '@/common/axios.js'
+import { language as axios } from '@/common/axios.js'
 
 export default {
   getLanguages() {
-    return language.get('/languages')
+    return axios.get('/languages')
   },
   detectLanguage(payload) {
-    return language.post('/detect', payload)
+    return axios.post('/detect', payload)
   },
-  translateText(payload) {
-    return language.post('', payload)
+  translateText(data) {
+    let formData = new FormData();
+    formData.append('q', data.q)
+    formData.append('source', data.source)
+    formData.append('target', data.target)
+    formData.append('format', data.format)
+    return axios.post('/translate', formData)
   }
 };

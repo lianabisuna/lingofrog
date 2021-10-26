@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    word: '',
+    text: '',
     languages: [],
     selected: [],
     translations: [
@@ -14,14 +14,14 @@ export default new Vuex.Store({
     ]
   },
   getters: {
-    word: state => state.word,
+    text: state => state.text,
     languages: state => state.languages,
     selected: state => state.selected,
     translations: state => state.translations
   },
   mutations: {
-    updateWord(state, data) {
-      state.word = data
+    updateText(state, data) {
+      state.text = data
     },
     setLanguages(state, data) {
       state.languages = data
@@ -39,15 +39,15 @@ export default new Vuex.Store({
   actions: {
     async getLanguages(state) {
       let response = await Language.getLanguages()
-      localStorage.setItem('languages', JSON.stringify(response.data.languages))
-      state.commit('setLanguages', response.data.languages)
+      localStorage.setItem('languages', JSON.stringify(response.data))
+      state.commit('setLanguages', response.data)
     },
     async translateText(state, {payload, language}) {
       let response = await Language.translateText(payload)
       let data = {
         source: payload.source,
         target: payload.target,
-        translation: response.data.data.translations.translatedText,
+        translation: response.data.translatedText,
         language: language
       }
       state.commit('addTranslation', data)

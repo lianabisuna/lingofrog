@@ -11,30 +11,33 @@
       <div
         :class="[
           'search-bar-container d-flex',
-          { 'search-bar-border': scrollDown }
+          scrollDown && textFocus ? 'search-bar-container-border' : '',
         ]"
       >
         <div
           :class="[
             'd-flex align-center flex-grow-1',
-            scrollDown ? '' : 'search-bar-input-wrapper'
+            scrollDown ? '' : 'search-bar-input-wrapper',
+            !scrollDown && textFocus ? 'search-bar-input-border' : '',
           ]"
         >
           <v-text-field
-            v-model="word"
-            prepend-inner-icon="mdi-magnify"
+            v-model="text"
             hide-details
             placeholder="Type text to translate"
             solo flat
             autofocus
             class="search-text-input text-h5 font-weight-bold pl-3"
+            @focus="textFocus = true"
+            @blur="textFocus = false"
           ></v-text-field>
         </div>
         
         <div
           :class="[
             'd-flex align-center px-5',
-            scrollDown ? '' : 'search-bar-button-wrapper'
+            scrollDown ? '' : 'search-bar-button-wrapper',
+            !scrollDown && textFocus ? 'search-bar-button-border' : '',
           ]"
         >
           <v-btn
@@ -60,13 +63,14 @@
     data: () => ({
       prevScroll: 0,
       scrollPosition: 0,
-      scrollDown: false
+      scrollDown: false,
+      textFocus: true
     }),
 
     computed: {
-      word: {
-        get() { return this.$store.getters['word'] },
-        set(val) { this.$store.commit('updateWord', val) }
+      text: {
+        get() { return this.$store.getters['text'] },
+        set(val) { this.$store.commit('updateText', val) }
       }
     },
 
@@ -110,9 +114,21 @@
     position: absolute;
     left: 0;
   }
-  .search-bar-border {
-    border-bottom: 2px solid white !important;
+
+  // Add text input container outline on focus
+  .search-bar-container-border {
+    border: 2px solid #51CEA4 !important;
   }
+  // Add text input outline on focus
+  .search-bar-input-border {
+    box-shadow: 0 0 0 2px #51CEA4;
+    clip-path: inset(-2px 0 -2px -2px);
+  }
+  .search-bar-button-border {
+    box-shadow: 0 0 0 2px #51CEA4;
+    clip-path: inset(-2px -2px -2px 0);
+  }
+  
   .search-bar-input-wrapper {
     border-radius: 0.5rem 0 0 0.5rem;
     height: 100%;

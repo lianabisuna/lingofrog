@@ -1,15 +1,17 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-sheet
-      outlined="2"
-      :color="hover ? 'white' : 'transparent'"
-      class="rounded-lg flex-grow-1 d-flex flex-column"
+      :class="[
+        'rounded-lg flex-grow-1 d-flex flex-column',
+        hover ? 'card-outline': ''
+      ]"
     >
       <v-card
         dark
         color="#5F4DA1"
         class="rounded-lg flex-grow-1 d-flex flex-column"
         flat
+        border-colo
       >
         <div>
           <v-toolbar
@@ -39,7 +41,7 @@
                   x-small
                   depressed
                   color="#5F4DA1"
-                  :style="{ border: '2px solid white !important' }"
+                  :style="{ border: '2px solid #EC6691 !important' }"
                 >
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -81,3 +83,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .card-outline {
+    outline: 2px solid #EC6691;
+  }
+</style>

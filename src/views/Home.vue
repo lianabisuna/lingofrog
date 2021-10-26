@@ -8,7 +8,10 @@
         <v-card
           flat
           dark
-          class="rounded-lg"
+          :class="[
+            'rounded-lg ',
+            searchFocus ? 'language-card-focus' : 'language-card-blur'
+          ]"
           color="#EC6691"
         >
           <span style="position: absolute; right: -0.75rem; top: -0.75rem; z-index: 1;">
@@ -17,7 +20,9 @@
               x-small
               depressed
               color="#EC6691"
-              :style="{ border: '2px solid white !important' }"
+              :class="[
+                searchFocus ? 'close-button-focus' : 'close-button-blur'
+              ]"
               @click="drawer = false"
             >
               <v-icon>mdi-close</v-icon>
@@ -31,6 +36,8 @@
               hide-details
               solo flat
               class="py-1 search-language-input"
+              @focus="searchFocus = true"
+              @blur="searchFocus = false"
             >
             </v-text-field>
           </v-row>
@@ -46,13 +53,13 @@
                 block
                 class="text-none font-weight-regular justify-start rounded-lg"
                 :style="{letterSpacing: 'normal'}"
-                :color="isSelected(language.language) ? 'pink darken-2' : 'transparent'"
+                :color="isSelected(language.code) ? '#5F4DA1' : 'transparent'"
                 @click="toggleLanguage(language)"
-                :loading="isLoading && currentLanguage === language.language"
+                :loading="isLoading && currentLanguage === language.code"
               >
                 <v-icon
                   left
-                  v-if="isSelected(language.language)"
+                  v-if="isSelected(language.code)"
                 >
                   mdi-check
                 </v-icon>
@@ -85,7 +92,7 @@
             <v-icon right>mdi-chevron-right</v-icon>
           </v-btn>
 
-          <span :class="{ 'ml-5': !drawer }">6 of 120 languages</span>
+          <span :class="{ 'ml-5': !drawer }">{{ translations.length }} of {{ languages.length }} languages</span>
 
           <v-spacer></v-spacer>
 
@@ -148,13 +155,14 @@
       drawer: true,
       storedLanguages: JSON.parse(localStorage.getItem('languages')),
       isLoading: false,
-      currentLanguage: null
+      currentLanguage: null,
+      searchFocus: false
     }),
 
     computed: {
-      word: {
-        get() { return this.$store.getters['word'] },
-        set(val) { this.$store.commit('updateWord', val) }
+      text: {
+        get() { return this.$store.getters['text'] },
+        set(val) { this.$store.commit('updateText', val) }
       },
       languages() { return this.$store.getters['languages'] },
       selected() { return this.$store.getters['selected'] },
@@ -174,27 +182,28 @@
       },
       isSelected(code) {
         // Traverse the array to see if language code is included
-        if (this.selected.find(el => code === el.language)) {
+        if (this.selected.find(el => code === el.code)) {
           return true 
         }
         return
       },
       async toggleLanguage(language) {
         // Determine the position if language is toggled
-        let index = this.selected.findIndex(el => language.language === el.language)
+        let index = this.selected.findIndex(el => language.code === el.code)
         if (index >= 0) {
           this.$store.commit('removeSelected', index)
         }
         else {
-          if (this.word) {
-            // Fetch word translation from API
-            this.currentLanguage = language.language
+          if (this.text) {
+            // Fetch text translation from API
+            this.currentLanguage = language.code
             this.isLoading = true
             this.$store.commit('addSelected', language)
             const payload = {
-              q: this.word,
+              q: this.text,
               source: 'en',
-              target: language.language
+              target: language.code,
+              format: 'text'
             }
             await this.$store.dispatch('translateText', {payload: payload, language: language.name})
             this.isLoading = false
@@ -215,6 +224,21 @@
     .v-input__slot {
       background-color: #EC6691 !important;
     }
+  }
+  
+  .language-card-focus {
+    outline: 2px solid #5F4DA1;
+  }
+  .language-card-blur {
+    outline: 2px solid white;
+  }
+
+  .close-button-focus {
+    border: 2px solid #5F4DA1 !important;
+  }
+
+  .close-button-blur {
+    border: 2px solid white !important;
   }
 
   @import '~vuetify/src/styles/settings/_variables';
