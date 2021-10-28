@@ -125,6 +125,20 @@
                 :translation="item.translation"
               />
             </v-col>
+
+            <v-col
+              cols="12" md="6" lg="4" xl="3"
+              class="flex-grow-1 d-flex flex-column"
+              v-for="item in pendingTranslations"
+              :key="item"
+            >
+              <v-skeleton-loader
+                class="rounded-lg flex-grow-1 d-flex flex-column"
+                color="#5F4DA1"
+                max-width="300"
+                type="card"
+              ></v-skeleton-loader>
+            </v-col>
             
             <v-col
               cols="12" md="6" lg="4" xl="3"
@@ -156,7 +170,8 @@
       storedLanguages: JSON.parse(localStorage.getItem('languages')),
       isLoading: false,
       currentLanguage: null,
-      searchFocus: false
+      searchFocus: false,
+      pendingTranslations: 0
     }),
 
     computed: {
@@ -167,6 +182,14 @@
       languages() { return this.$store.getters['languages'] },
       selected() { return this.$store.getters['selected'] },
       translations() { return this.$store.getters['translations'] }
+      // pendingTranslations() {
+      //   if (this.text) {
+      //     return this.selected.length - this.translations.length
+      //   }
+      //   else {
+      //     return 0
+      //   }
+      // }
     },
 
     mounted() {

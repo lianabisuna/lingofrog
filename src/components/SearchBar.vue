@@ -30,6 +30,8 @@
             class="search-text-input text-h5 font-weight-bold pl-3"
             @focus="textFocus = true"
             @blur="textFocus = false"
+            @keyup="startDetectTimer"
+            @keydown="clearDetectTimer"
           ></v-text-field>
         </div>
         
@@ -44,11 +46,12 @@
             dark
             large
             depressed
-            color="#51CEA4"
+            :color="isDetecting ? '#399073' : '#51CEA4'"
             class="rounded-lg text-none"
             :style="{letterSpacing: 'normal'}"
+            :loading="isDetecting"
           >
-            English
+            {{ detected.language }}
           </v-btn>
         </div>
       </div>
@@ -64,14 +67,27 @@
       prevScroll: 0,
       scrollPosition: 0,
       scrollDown: false,
-      textFocus: true
+      textFocus: true,
+      timerId: null,
+      isDetecting: false
     }),
+
+    watch: {
+      text(val) {
+        this.translations = this.translations.filter(el => el.text == val)
+      }
+    },
 
     computed: {
       text: {
         get() { return this.$store.getters['text'] },
         set(val) { this.$store.commit('updateText', val) }
-      }
+      },
+      detected() { return this.$store.getters['detected'] },
+      translations: {
+        get() { return this.$store.getters['translations'] },
+        set(val) { this.$store.commit('updateTranslations', val) }
+      },
     },
 
     methods: {
@@ -93,6 +109,31 @@
         this.scrollDown = false
         this.prevScroll = this.scrollPosition <= 0 ? 0 : this.scrollPosition
         return
+      },
+      startDetectTimer() {
+        if (this.text) {
+          clearTimeout(this.timerId)
+          this.timerId = setTimeout(this.detectLanguage, 2000)
+        }
+      },
+      clearDetectTimer() {
+        clearTimeout(this.timerId)
+      },
+      async detectLanguage() {
+        this.isDetecting = true
+        await this.$store.dispatch('detectLanguage', { q: this.text })
+        this.isDetecting = false
+        this.translateSelected()
+      },
+      async translateSelected() {
+        if (this.text) {
+          // Fetch text translation from API
+          // this.currentLanguage = language.code
+          // this.isLoading = true
+          await this.$store.dispatch('translateSelected')
+          // this.isLoading = false
+          // this.currentLanguage = null
+        }
       }
     }
   }
