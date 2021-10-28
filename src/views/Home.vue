@@ -180,8 +180,8 @@
         set(val) { this.$store.commit('updateText', val) }
       },
       languages() { return this.$store.getters['languages'] },
-      selected() { return this.$store.getters['selected'] },
-      translations() { return this.$store.getters['translations'] }
+      translations() { return this.$store.getters['translations'] },
+      detected() { return this.$store.getters['detected'] }
       // pendingTranslations() {
       //   if (this.text) {
       //     return this.selected.length - this.translations.length
@@ -205,36 +205,41 @@
       },
       isSelected(code) {
         // Traverse the array to see if language code is included
-        if (this.selected.find(el => code === el.code)) {
+        if (this.translations.find(el => code === el.target)) {
           return true 
         }
         return
       },
       async toggleLanguage(language) {
+        let data = {
+          text: this.text,
+          source: this.detected.code,
+          target: language.code,
+          translation: '',
+          language: language.name
+        }
         // Determine the position if language is toggled
-        let index = this.selected.findIndex(el => language.code === el.code)
+        let index = this.translations.findIndex(el => language.code === el.target)
         if (index >= 0) {
+          console.log('Language on the list')
           this.$store.commit('removeSelected', index)
         }
         else {
           if (this.text) {
+            console.log('Language NOT on the list yet')
             // Fetch text translation from API
             this.currentLanguage = language.code
             this.isLoading = true
-            this.$store.commit('addSelected', language)
-            const payload = {
-              q: this.text,
-              source: 'en',
-              target: language.code,
-              format: 'text'
-            }
-            await this.$store.dispatch('translateText', {payload: payload, language: language.name})
+            this.$store.commit('addSelected', data)
+            
+            await this.$store.dispatch('translateSelected')
             this.isLoading = false
             this.currentLanguage = null
           }
           else {
             // Add data to selected language
-            this.$store.commit('addSelected', language)
+            console.log('Language NOT on the list yet and was added')
+            this.$store.commit('addSelected', data)
           }
         }
       }

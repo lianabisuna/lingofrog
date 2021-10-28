@@ -73,9 +73,9 @@
     }),
 
     watch: {
-      text(val) {
-        this.translations = this.translations.filter(el => el.text == val)
-      }
+      // text(val) {
+      //   this.translations = this.translations.filter(el => el.text == val)
+      // }
     },
 
     computed: {

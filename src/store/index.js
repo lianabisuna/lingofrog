@@ -8,7 +8,6 @@ export default new Vuex.Store({
   state: {
     text: '',
     languages: [],
-    selected: [],
     translations: [],
     detected: {
       code: 'en',
@@ -18,7 +17,6 @@ export default new Vuex.Store({
   getters: {
     text: state => state.text,
     languages: state => state.languages,
-    selected: state => state.selected,
     translations: state => state.translations,
     detected: state => state.detected
   },
@@ -30,18 +28,14 @@ export default new Vuex.Store({
       state.languages = data
     },
     addSelected(state, data) {
-      state.selected.push(data)
+      state.translations.push(data)
     },
-    removeSelected(state, index) {
-      state.selected.splice(index, 1)
+    removeSelected() {
+      //
     },
-    addTranslation(state, data) {
-      // let index = state.translations.findIndex(el => {
-      //   return el.target === data.source && el.text === state.text
-      // })
-
-      // if (index < 0)
-        state.translations.push(data)
+    addTranslation(state, {key, text, translation}) {
+      state.translations[key].translation = translation
+      state.translations[key].text = text
     },
     updateDetected(state, data) {
       state.detected = data
@@ -59,17 +53,6 @@ export default new Vuex.Store({
       localStorage.setItem('languages', JSON.stringify(response.data))
       context.commit('setLanguages', response.data)
     },
-    async translateText(context, {payload, language}) {
-      let response = await Language.translateText(payload)
-      let data = {
-        text: context.getters['text'],
-        source: payload.source,
-        target: payload.target,
-        translation: response.data.translatedText,
-        language: language
-      }
-      context.commit('addTranslation', data)
-    },
     async detectLanguage(context, payload) {
       let response = await Language.detectLanguage(payload)
       let language = context.getters['languages'].find(el => el.code === response.data[0].language)
@@ -79,17 +62,28 @@ export default new Vuex.Store({
       }
       context.commit('updateDetected', data)
     },
-    async translateSelected(context,) {
-      context.getters['selected'].map(lang => {
-        const payload = {
-          q: context.getters['text'],
-          source: context.getters['detected'].code,
-          target: lang.code,
-          format: 'text'
+    async translateSelected(context) {
+      context.getters['translations'].map((el, key) => {
+        if (!el.translation) {
+          const payload = {
+            q: context.getters['text'],
+            source: el.source,
+            target: el.target,
+            format: 'text'
+          }
+          context.dispatch('translateText', { payload: payload, key: key })
         }
-        context.dispatch('translateText', {payload: payload, language: lang.name})
       })
-    }
+    },
+    async translateText(context, {payload, key}) {
+      let response = await Language.translateText(payload)
+      let data = {
+        text: payload.q,
+        translation: response.data.translatedText,
+        key: key
+      }
+      context.commit('addTranslation', data)
+    },
   },
   modules: {
   }
