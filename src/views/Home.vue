@@ -121,6 +121,7 @@
               class="d-flex"
             >
               <AppCard
+                :index="key"
                 :language="item.language"
                 :translation="item.translation"
               />
@@ -218,7 +219,7 @@
           translation: '',
           language: language.name
         }
-        // Determine the position if language is toggled
+        // Determine the index position if language is toggled
         let index = this.translations.findIndex(el => language.code === el.target)
         if (index >= 0) {
           console.log('Language on the list')

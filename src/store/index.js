@@ -30,8 +30,8 @@ export default new Vuex.Store({
     addSelected(state, data) {
       state.translations.push(data)
     },
-    removeSelected() {
-      //
+    removeSelected(state, index) {
+      state.translations.splice(index, 1);
     },
     addTranslation(state, {key, text, translation}) {
       state.translations[key].translation = translation
@@ -64,7 +64,7 @@ export default new Vuex.Store({
     },
     async translateSelected(context) {
       context.getters['translations'].map((el, key) => {
-        if (!el.translation) {
+        if (!el.translation || el.text !== context.getters['text']) {
           const payload = {
             q: context.getters['text'],
             source: el.source,

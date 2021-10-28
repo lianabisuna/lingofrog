@@ -42,6 +42,7 @@
                   depressed
                   color="#5F4DA1"
                   :style="{ border: '2px solid #EC6691 !important' }"
+                  @click="removeTranslation"
                 >
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -77,9 +78,16 @@
     name: 'AppCard',
 
     props: {
+      index: { type: Number, default: null },
       src: { type: String, default: '' },
       language: { type: String, default: '' },
       translation: { type: String, default: '' }
+    },
+
+    methods: {
+      removeTranslation() {
+        this.$store.commit('removeSelected', this.index)
+      }
     }
   }
 </script>
