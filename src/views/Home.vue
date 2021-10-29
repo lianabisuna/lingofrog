@@ -2,7 +2,7 @@
   <main class="app-home px-4 mt-8">
     <v-row>
       <v-col
-        cols="3"
+        cols="12" sm="4" md="3"
         v-if="drawer"
       >
         <v-card

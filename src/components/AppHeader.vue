@@ -6,8 +6,10 @@
   >
     <div class="d-flex align-center">
       <h3>LingoFrog</h3>
-      <v-icon color="#808080">mdi-circle-small</v-icon>
-      <span :style="{ color: '#808080' }">Translate text to 100+ languages</span>
+      <div v-if="$vuetify.breakpoint.mdAndUp">
+        <v-icon color="#808080">mdi-circle-small</v-icon>
+        <span :style="{ color: '#808080' }">Translate text to 100+ languages</span>
+      </div>
     </div>
 
     <v-spacer></v-spacer>
