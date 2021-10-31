@@ -13,6 +13,7 @@
             searchFocus ? 'language-card-focus' : 'language-card-blur'
           ]"
           color="#EC6691"
+          min-height="80vh"
         >
           <span style="position: absolute; right: -0.75rem; top: -0.75rem; z-index: 1;">
             <v-btn
@@ -31,10 +32,12 @@
           
           <v-row no-gutters :style="{ borderBottom: '2px solid white' }">
             <v-text-field
+              v-model="search"
               dark
               placeholder="Search language"
               hide-details
               solo flat
+              clearable
               class="py-1 search-language-input"
               @focus="searchFocus = true"
               @blur="searchFocus = false"
@@ -45,7 +48,7 @@
             <v-col
               cols="12"
               class="py-1"
-              v-for="(language, i) in languages"
+              v-for="(language, i) in search ? filteredLanguages : languages"
               :key="i"
             >
               <v-btn
@@ -183,7 +186,8 @@
       currentLanguage: null,
       searchFocus: false,
       pendingTranslations: 0,
-      layout: 'grid'
+      layout: 'grid',
+      search: ''
     }),
 
     computed: {
@@ -193,7 +197,7 @@
       },
       languages() { return this.$store.getters['languages'] },
       translations() { return this.$store.getters['translations'] },
-      detected() { return this.$store.getters['detected'] }
+      detected() { return this.$store.getters['detected'] },
       // pendingTranslations() {
       //   if (this.text) {
       //     return this.selected.length - this.translations.length
@@ -201,7 +205,10 @@
       //   else {
       //     return 0
       //   }
-      // }
+      // },
+      filteredLanguages() {
+        return this.languages.filter(el => el.name.includes(this.search))
+      }
     },
 
     mounted() {
