@@ -101,12 +101,13 @@
             background-color="#5F4DA1"
             borderless
             class="rounded-lg"
+            v-model="layout"
           >
-            <v-btn text>
+            <v-btn text value="grid">
               <v-icon>mdi-view-module-outline</v-icon>
             </v-btn>
 
-            <v-btn text>
+            <v-btn text value="list">
               <v-icon>mdi-view-sequential-outline</v-icon>
             </v-btn>
           </v-btn-toggle>
@@ -117,7 +118,10 @@
             <v-col
               v-for="(item,key) in translations"
               :key="key"
-              cols="12" md="6" lg="4" xl="3"
+              cols="12"
+              :md="layout === 'grid' ? '6' : '12'"
+              :lg="layout === 'grid' ? '4' : '12'"
+              :xl="layout === 'grid' ? '3' : '12'"
               class="d-flex"
             >
               <AppCard
@@ -128,7 +132,10 @@
             </v-col>
 
             <v-col
-              cols="12" md="6" lg="4" xl="3"
+              cols="12"
+              :md="layout === 'grid' ? '6' : '12'"
+              :lg="layout === 'grid' ? '4' : '12'"
+              :xl="layout === 'grid' ? '3' : '12'"
               class="flex-grow-1 d-flex flex-column"
               v-for="item in pendingTranslations"
               :key="item"
@@ -142,7 +149,10 @@
             </v-col>
             
             <v-col
-              cols="12" md="6" lg="4" xl="3"
+              cols="12"
+              :md="layout === 'grid' ? '6' : '12'"
+              :lg="layout === 'grid' ? '4' : '12'"
+              :xl="layout === 'grid' ? '3' : '12'"
               class="d-flex"
             >
               <ButtonCard />
@@ -172,7 +182,8 @@
       isLoading: false,
       currentLanguage: null,
       searchFocus: false,
-      pendingTranslations: 0
+      pendingTranslations: 0,
+      layout: 'grid'
     }),
 
     computed: {
