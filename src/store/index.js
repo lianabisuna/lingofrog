@@ -12,13 +12,15 @@ export default new Vuex.Store({
     detected: {
       code: 'en',
       language: 'English'
-    }
+    },
+    drawer: true
   },
   getters: {
     text: state => state.text,
     languages: state => state.languages,
     translations: state => state.translations,
-    detected: state => state.detected
+    detected: state => state.detected,
+    drawer: state => state.drawer
   },
   mutations: {
     updateText(state, data) {
@@ -45,6 +47,9 @@ export default new Vuex.Store({
     },
     updateTranslations(state, data) {
       state.translations = data
+    },
+    toggleDrawer(state, data) {
+      state.drawer = data
     }
   },
   actions: {

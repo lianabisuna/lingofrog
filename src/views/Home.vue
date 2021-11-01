@@ -41,6 +41,7 @@
               class="py-1 search-language-input"
               @focus="searchFocus = true"
               @blur="searchFocus = false"
+              id="search"
             >
             </v-text-field>
           </v-row>
@@ -130,6 +131,7 @@
               <AppCard
                 :index="key"
                 :language="item.language"
+                :code="item.target"
                 :translation="item.translation"
               />
             </v-col>
@@ -158,7 +160,7 @@
               :xl="layout === 'grid' ? '3' : '12'"
               class="d-flex"
             >
-              <ButtonCard />
+              <ButtonCard @open="focusDrawer" />
             </v-col>
           </v-row>
         </div>
@@ -180,7 +182,6 @@
     },
 
     data: () => ({
-      drawer: true,
       storedLanguages: JSON.parse(localStorage.getItem('languages')),
       isLoading: false,
       currentLanguage: null,
@@ -194,6 +195,10 @@
       text: {
         get() { return this.$store.getters['text'] },
         set(val) { this.$store.commit('updateText', val) }
+      },
+      drawer: {
+        get() { return this.$store.getters['drawer'] },
+        set(val) { this.$store.commit('toggleDrawer', val) }
       },
       languages() { return this.$store.getters['languages'] },
       translations() { return this.$store.getters['translations'] },
@@ -261,6 +266,12 @@
             this.$store.commit('addSelected', data)
           }
         }
+      },
+      focusDrawer() {
+        this.drawer = true
+        this.$nextTick(() => {
+          document.getElementById('search').focus()
+        })
       }
     }
   }

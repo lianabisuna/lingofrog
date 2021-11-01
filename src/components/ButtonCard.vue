@@ -13,6 +13,7 @@
         flat
         :color="hover ? '#564591' : '#5F4DA1'"
         :ripple="hover"
+        @click="$emit('open')"
       >
         <v-card-text class="text-center">
           <v-icon x-large>mdi-plus</v-icon>

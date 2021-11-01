@@ -24,15 +24,6 @@
               align="center"
               no-gutters
             >
-              <v-avatar
-                class="mr-2"
-                size="20"
-              >
-                <img
-                  :src="src"
-                  alt="John"
-                >
-              </v-avatar>
               <span>{{ language }}</span>
 
               <span v-if="hover" style="position: absolute; right: -0.75rem; top: -0.75rem;">
@@ -64,6 +55,7 @@
           <v-btn
             text
             icon
+            @click="speakText"
           >
             <v-icon>mdi-volume-high</v-icon>
           </v-btn>
@@ -81,12 +73,23 @@
       index: { type: Number, default: null },
       src: { type: String, default: '' },
       language: { type: String, default: '' },
+      code: { type: String, default: '' },
       translation: { type: String, default: '' }
+    },
+
+    computed: {
+      detected() { return this.$store.getters['detected'] }
     },
 
     methods: {
       removeTranslation() {
         this.$store.commit('removeSelected', this.index)
+      },
+      speakText() {
+        let speech = new SpeechSynthesisUtterance()
+        speech.lang = this.code
+        speech.text = this.translation
+        window.speechSynthesis.speak(speech)
       }
     }
   }
