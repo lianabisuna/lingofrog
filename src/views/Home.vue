@@ -135,23 +135,6 @@
                 :translation="item.translation"
               />
             </v-col>
-
-            <v-col
-              cols="12"
-              :md="layout === 'grid' ? '6' : '12'"
-              :lg="layout === 'grid' ? '4' : '12'"
-              :xl="layout === 'grid' ? '3' : '12'"
-              class="flex-grow-1 d-flex flex-column"
-              v-for="item in pendingTranslations"
-              :key="item"
-            >
-              <v-skeleton-loader
-                class="rounded-lg flex-grow-1 d-flex flex-column"
-                color="#5F4DA1"
-                max-width="300"
-                type="card"
-              ></v-skeleton-loader>
-            </v-col>
             
             <v-col
               cols="12"
@@ -166,6 +149,27 @@
         </div>
       </v-col>
     </v-row>
+
+    <v-snackbar
+      v-model="snackbar"
+      timeout="5000"
+      color="#161036"
+      min-height="60"
+      rounded="lg"
+    >
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          small
+          v-bind="attrs"
+          @click="snackbar = false"
+          icon
+        >
+          <v-icon small>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </main>
 </template>
 
@@ -186,7 +190,6 @@
       isLoading: false,
       currentLanguage: null,
       searchFocus: false,
-      pendingTranslations: 0,
       layout: 'grid',
       search: ''
     }),
@@ -203,17 +206,14 @@
       languages() { return this.$store.getters['languages'] },
       translations() { return this.$store.getters['translations'] },
       detected() { return this.$store.getters['detected'] },
-      // pendingTranslations() {
-      //   if (this.text) {
-      //     return this.selected.length - this.translations.length
-      //   }
-      //   else {
-      //     return 0
-      //   }
-      // },
       filteredLanguages() {
         return this.languages.filter(el => el.name.includes(this.search))
-      }
+      },
+      snackbar: {
+        get() { return this.$store.getters['snackbar'] },
+        set(val) { this.$store.commit('toggleSnackbar', val) }
+      },
+      message() { return this.$store.getters['message'] },
     },
 
     mounted() {
@@ -245,12 +245,10 @@
         // Determine the index position if language is toggled
         let index = this.translations.findIndex(el => language.code === el.target)
         if (index >= 0) {
-          console.log('Language on the list')
           this.$store.commit('removeSelected', index)
         }
         else {
           if (this.text) {
-            console.log('Language NOT on the list yet')
             // Fetch text translation from API
             this.currentLanguage = language.code
             this.isLoading = true
@@ -262,7 +260,6 @@
           }
           else {
             // Add data to selected language
-            console.log('Language NOT on the list yet and was added')
             this.$store.commit('addSelected', data)
           }
         }

@@ -13,14 +13,18 @@ export default new Vuex.Store({
       code: 'en',
       language: 'English'
     },
-    drawer: true
+    drawer: true,
+    message: '',
+    snackbar: false
   },
   getters: {
     text: state => state.text,
     languages: state => state.languages,
     translations: state => state.translations,
     detected: state => state.detected,
-    drawer: state => state.drawer
+    drawer: state => state.drawer,
+    message: state => state.message,
+    snackbar: state => state.snackbar
   },
   mutations: {
     updateText(state, data) {
@@ -50,6 +54,13 @@ export default new Vuex.Store({
     },
     toggleDrawer(state, data) {
       state.drawer = data
+    },
+    toggleSnackbar(state, data) {
+      state.snackbar = data
+    },
+    updateMessage(state, data) {
+      state.snackbar = true
+      state.message = data
     }
   },
   actions: {
@@ -81,13 +92,25 @@ export default new Vuex.Store({
       })
     },
     async translateText(context, {payload, key}) {
-      let response = await Language.translateText(payload)
-      let data = {
-        text: payload.q,
-        translation: response.data.translatedText,
-        key: key
-      }
-      context.commit('addTranslation', data)
+      let data = {}
+      await Language.translateText(payload)
+        .then(response => {
+          data = {
+            text: payload.q,
+            translation: response.data.translatedText,
+            key: key
+          }
+          context.commit('addTranslation', data)
+        })
+        .catch(error => {
+          data = {
+            text: payload.q,
+            translation: '',
+            key: key
+          }
+          context.commit('addTranslation', data)
+          context.commit('updateMessage', error.response.data.error)
+        })
     },
   },
   modules: {

@@ -43,7 +43,7 @@
         </div>
 
         <v-card-text
-          class="text-h2 white--text"
+          class="text-h2 white--text translation"
           :style="{ minHeight: '25vh' }"
         >
           {{ translation }}
@@ -98,5 +98,9 @@
 <style scoped>
   .card-outline {
     outline: 2px solid #EC6691;
+  }
+
+  .translation {
+    word-break: break-all;
   }
 </style>

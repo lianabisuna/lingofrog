@@ -8,7 +8,7 @@
       <h3>LingoFrog</h3>
       <div v-if="$vuetify.breakpoint.mdAndUp">
         <v-icon color="#808080">mdi-circle-small</v-icon>
-        <span :style="{ color: '#808080' }">Translate text to 100+ languages</span>
+        <span :style="{ color: '#808080' }">Translate text to multiple languages</span>
       </div>
     </div>
 
