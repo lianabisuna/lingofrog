@@ -96,7 +96,12 @@
             <v-icon right>mdi-chevron-right</v-icon>
           </v-btn>
 
-          <span :class="{ 'ml-5': !drawer }">{{ translations.length }} of {{ languages.length }} languages</span>
+          <span
+            v-if="$vuetify.breakpoint.mdAndUp"
+            :class="{ 'ml-5': !drawer }"
+          >
+            {{ translations.length }} of {{ languages.length }} languages
+          </span>
 
           <v-spacer></v-spacer>
 
@@ -207,7 +212,9 @@
       translations() { return this.$store.getters['translations'] },
       detected() { return this.$store.getters['detected'] },
       filteredLanguages() {
-        return this.languages.filter(el => el.name.includes(this.search))
+        return this.languages.filter(el => {
+          return el.name.toLowerCase().includes(this.search.toLowerCase())
+        })
       },
       snackbar: {
         get() { return this.$store.getters['snackbar'] },

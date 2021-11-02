@@ -27,7 +27,11 @@
             placeholder="Type text to translate"
             solo flat
             autofocus
-            class="search-text-input text-h5 font-weight-bold pl-3"
+            :class="[
+              'search-text-input-scrolled',
+              $vuetify.breakpoint.smAndDown ? 'text-h6 font-weight-bold' : 'font-weight-bold text-h5',
+              scrollDown ? 'search-text-input' : 'pl-5'
+            ]"
             @focus="textFocus = true"
             @blur="textFocus = false"
             @keyup="startDetectTimer"
@@ -37,9 +41,10 @@
         
         <div
           :class="[
-            'd-flex align-center px-5',
+            'd-flex align-center',
             scrollDown ? '' : 'search-bar-button-wrapper',
             !scrollDown && textFocus ? 'search-bar-button-border' : '',
+            scrollDown ? '' : 'px-5'
           ]"
         >
           <v-btn
@@ -147,6 +152,13 @@
       background-color: #F9D45D !important;
     }
     color: #161036 !important;
+  }
+
+  .search-text-input-scrolled {
+    .v-input__slot {
+      background-color: #F9D45D !important;
+      padding: 0 !important;
+    }
   }
 
   .search-bar-container {
